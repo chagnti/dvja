@@ -24,12 +24,18 @@ jobs:
         uses: github/codeql-action/init@v3
         with:
           languages: java
-          queries: security-extended
+          # Points to our config file — loads security-extended + custom query + path exclusions
+          config-file: ./.github/codeql/codeql-config.yml
 
       - name: Auto-build
         uses: github/codeql-action/autobuild@v3
+        with:
+          # Override Java source/target to 8 — dvja pom.xml targets Java 7 (unsupported in Java 21)
+          build-command: mvn clean package -DskipTests -Dmaven.compiler.source=8 -Dmaven.compiler.target=8
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:java"
+          # Upload SARIF results to GitHub Security tab
+          upload: true

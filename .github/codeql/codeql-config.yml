@@ -1,0 +1,15 @@
+name: "DVJA CodeQL Config"
+
+# Load the built-in security-extended suite AND our custom query
+queries:
+  - uses: security-extended          # 124 built-in Java security queries
+  - uses: ./.github/codeql/SqlInjectionCustom.ql  # our custom query
+
+# Exclude paths that don't need scanning — improves scan speed
+# and removes noise from test/generated code
+paths-ignore:
+  - "src/test/**"                    # unit tests — not production code
+  - "src/main/webapp/WEB-INF/**"     # XML config files, not Java
+  - "**/target/**"                   # Maven build output
+  - "**/*.min.js"                    # minified JS — unreadable and irrelevant
+  - "**/node_modules/**"             # JS dependencies
